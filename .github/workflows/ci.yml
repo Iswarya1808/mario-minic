@@ -49,4 +49,12 @@ jobs:
     - name: Docker login and push 
       run: |
         docker login mario.azurecr.io -u mario -p ${{ secrets.ACR_PASSWD }}
-        docker push mario.azurecr.io/netflix:${{ github.run_id }} 
+        docker push mario.azurecr.io/mario:${{ github.run_id }} 
+
+  CD:
+    runs-on: self-hosted
+    needs: CI
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
