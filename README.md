@@ -20,7 +20,7 @@ A fully functional Super Mario Bros game built with TypeScript, HTML5 Canvas, an
 │   ├── game/
 │   │   ├── entities/
 │   │   │   ├── Player.ts          # Player character with physics and controls
-│   │   │   ├── Enemy.ts           # Enemy AI and behavior
+│   │   │   ├── Enemy.ts           # Enemy AI and behaviors
 │   │   │   ├── Coin.ts            # Collectible coins with animations
 │   │   │   └── Platform.ts        # Platform/ground collision objects
 │   │   ├── Game.ts                # Main game controller and state management
