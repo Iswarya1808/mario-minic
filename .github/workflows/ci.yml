@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: master
+    
+jobs:
+  sonarqube:
+    runs-on: self-hosted 
+  
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for accurate analysis
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        
+    - name: clear node cache
+      run: npm cache clean --force
+
+    # - name: Run SonarQube Scan
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   run: |
+    #     npm install -g sonar-scanner
+    #     sonar-scanner \
+    #       -Dsonar.projectKey=Netflix \
+    #       -Dsonar.sources=. \
+    #       -Dsonar.host.url=http://20.55.110.89:9000/ \
+    #       -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  CI: 
+    runs-on: self-hosted
+    needs: sonarqube
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Docker build
+      run: docker build -t mario .
+      
+    # - name: Trivy scan
+    #   run: trivy image --severity CRITICAL,HIGH --vuln-type "os,library" --exit-code 0 netflix:${{ github.run_id }}
+
+    - name: Docker login and push 
+      run: |
+        docker login mario.azurecr.io -u mario -p ${{ secrets.ACR_PASSWD }}
+        docker push mario.azurecr.io/netflix:${{ github.run_id }} 
